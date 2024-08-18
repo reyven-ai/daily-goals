@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
+import { DummyModule } from './dummy/dummy.module';
 
 @Module({
   imports: [
@@ -12,7 +13,10 @@ import { PrismaService } from './prisma/prisma.service';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      playground: true,
+      introspection: true,
     }),
+    DummyModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
