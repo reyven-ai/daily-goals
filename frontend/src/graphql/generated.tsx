@@ -15,70 +15,80 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
-export type Dummy = {
-  __typename?: 'Dummy';
-  description: Scalars['String']['output'];
+export type Auth = {
+  __typename?: 'Auth';
+  authId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  email: Scalars['String']['output'];
   id: Scalars['Int']['output'];
-  title: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  authUser: Auth;
+};
+
+
+export type MutationAuthUserArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  token: Scalars['String']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  dummy: Dummy;
-  findAll: Array<Dummy>;
+  getAllUsers: Array<Auth>;
 };
 
-
-export type QueryDummyArgs = {
-  id: Scalars['Int']['input'];
-};
-
-export type GetDummyQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetDummyQuery = { __typename?: 'Query', dummy: { __typename?: 'Dummy', id: number, title: string, description: string } };
+export type AuthUserMutationVariables = Exact<{
+  token: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+}>;
 
 
-export const GetDummyDocument = gql`
-    query GetDummy {
-  dummy(id: 1) {
+export type AuthUserMutation = { __typename?: 'Mutation', authUser: { __typename?: 'Auth', id: number, email: string, name: string } };
+
+
+export const AuthUserDocument = gql`
+    mutation AuthUser($token: String!, $email: String!, $name: String!) {
+  authUser(token: $token, email: $email, name: $name) {
     id
-    title
-    description
+    email
+    name
   }
 }
     `;
+export type AuthUserMutationFn = Apollo.MutationFunction<AuthUserMutation, AuthUserMutationVariables>;
 
 /**
- * __useGetDummyQuery__
+ * __useAuthUserMutation__
  *
- * To run a query within a React component, call `useGetDummyQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDummyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useAuthUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useGetDummyQuery({
+ * const [authUserMutation, { data, loading, error }] = useAuthUserMutation({
  *   variables: {
+ *      token: // value for 'token'
+ *      email: // value for 'email'
+ *      name: // value for 'name'
  *   },
  * });
  */
-export function useGetDummyQuery(baseOptions?: Apollo.QueryHookOptions<GetDummyQuery, GetDummyQueryVariables>) {
+export function useAuthUserMutation(baseOptions?: Apollo.MutationHookOptions<AuthUserMutation, AuthUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDummyQuery, GetDummyQueryVariables>(GetDummyDocument, options);
+        return Apollo.useMutation<AuthUserMutation, AuthUserMutationVariables>(AuthUserDocument, options);
       }
-export function useGetDummyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDummyQuery, GetDummyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDummyQuery, GetDummyQueryVariables>(GetDummyDocument, options);
-        }
-export function useGetDummySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDummyQuery, GetDummyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetDummyQuery, GetDummyQueryVariables>(GetDummyDocument, options);
-        }
-export type GetDummyQueryHookResult = ReturnType<typeof useGetDummyQuery>;
-export type GetDummyLazyQueryHookResult = ReturnType<typeof useGetDummyLazyQuery>;
-export type GetDummySuspenseQueryHookResult = ReturnType<typeof useGetDummySuspenseQuery>;
-export type GetDummyQueryResult = Apollo.QueryResult<GetDummyQuery, GetDummyQueryVariables>;
+export type AuthUserMutationHookResult = ReturnType<typeof useAuthUserMutation>;
+export type AuthUserMutationResult = Apollo.MutationResult<AuthUserMutation>;
+export type AuthUserMutationOptions = Apollo.BaseMutationOptions<AuthUserMutation, AuthUserMutationVariables>;
