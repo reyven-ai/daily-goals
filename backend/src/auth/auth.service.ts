@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from './entities/auth.entity';
 import { CreateAuthInput } from './dto/create-auth.input';
-import { UpdateAuthInput } from './dto/update-auth.input';
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async getAllUsers(): Promise<User[]> {
+    return this.prisma.user.findMany();
+  }
+
   create(createAuthInput: CreateAuthInput) {
-    return 'This action adds a new auth';
+    return createAuthInput;
   }
 
   findAll() {
@@ -14,10 +21,6 @@ export class AuthService {
 
   findOne(id: number) {
     return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthInput: UpdateAuthInput) {
-    return `This action updates a #${id} auth`;
   }
 
   remove(id: number) {

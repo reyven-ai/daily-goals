@@ -85,9 +85,7 @@ export const ClerkProviderWrapper = ({ children }: PropsWithChildren) => {
             lineHeight: "2",
           },
           form: {
-            // justifyContent: "flex-start",
             alignItems: "left",
-            // textAlign: "left",
           },
         },
       }}

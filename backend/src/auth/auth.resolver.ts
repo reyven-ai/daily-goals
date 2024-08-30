@@ -1,29 +1,29 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { Auth } from './entities/auth.entity';
+import { User } from './entities/auth.entity';
+import { AuthService } from './auth.service';
 
-@Resolver(() => Auth)
+@Resolver(() => User)
 export class AuthResolver {
-  authService: any;
-
   constructor(
+    private readonly authService: AuthService,
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
 
-  @Query(() => [Auth], { name: 'getAllUsers' })
-  async getAllUsers(): Promise<Auth[]> {
+  @Query(() => [User], { name: 'getAllUsers' })
+  async getAllUsers(): Promise<User[]> {
     console.log('Fetching all users');
     return this.authService.getAllUsers();
   }
 
-  @Mutation(() => Auth)
+  @Mutation(() => User)
   async authUser(
     @Args('token') token: string,
     @Args('email') email: string,
     @Args('name') name: string,
-  ): Promise<Auth> {
+  ): Promise<User> {
     try {
       const decodedToken = this.jwtService.decode(token) as {
         sub: string;

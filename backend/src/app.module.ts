@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppController } from './app.controller';
@@ -6,7 +6,8 @@ import { AppService } from './app.service';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
-import { JwtMiddleware } from './common/middleware/jwt.middleware';
+import { APP_GUARD } from '@nestjs/core'; // Import APP_GUARD
+import { AuthGuard } from './auth/guard/auth.guard';
 
 @Module({
   imports: [
@@ -20,10 +21,13 @@ import { JwtMiddleware } from './common/middleware/jwt.middleware';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // consumer.apply(JwtMiddleware).forRoutes('*'); // Apply to all routes or specify routes as needed
-  }
-}
+export class AppModule {}

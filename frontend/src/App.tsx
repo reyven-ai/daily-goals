@@ -5,7 +5,7 @@ import SignInPage from "./auth/pages/Signin";
 import RootLayout from "./layouts/root-layout";
 import PrivateRoutes from "./routes/private.routes";
 import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
-import Containue from "./auth/pages/Containue";
+import Containue from "./auth/pages/Continue";
 import Verify from "./auth/pages/Verify";
 import { ClerkProviderWrapper } from "./providers/ClerkProvider";
 import { ApolloProviderWrapper } from "./providers/ApolloProvider";

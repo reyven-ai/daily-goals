@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 import { useAuthUserMutation } from "@/graphql/generated";
 import { useSession, useAuth as useAuthClerk } from "@clerk/clerk-react";
@@ -64,16 +65,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [logIn, clerkSession.isSignedIn, isAuthInit]);
 
+  const contextValue = useMemo(
+    () => ({
+      isSignedIn: clerkSession.isSignedIn,
+      session: clerkSession.session,
+      logIn,
+      logOut,
+    }),
+    [clerkSession.isSignedIn, clerkSession.session, logIn, logOut]
+  );
+
   return (
-    <AuthContext.Provider
-      value={{
-        isSignedIn: clerkSession.isSignedIn,
-        session: clerkSession.session,
-        logIn,
-        logOut,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }

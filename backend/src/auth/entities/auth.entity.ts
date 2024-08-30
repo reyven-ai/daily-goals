@@ -1,7 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
-export class Auth {
+export class User {
   @Field(() => String)
   id: string;
 
