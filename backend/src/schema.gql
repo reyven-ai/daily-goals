@@ -2,13 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Dummy {
-  description: String!
-  id: Int!
-  title: String!
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  authUser(email: String!, name: String!, token: String!): User!
 }
 
 type Query {
-  dummy(id: Int!): Dummy!
-  findAll: [Dummy!]!
+  getAllUsers: [User!]!
+}
+
+type User {
+  authId: String!
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  name: String!
+  updatedAt: DateTime!
 }

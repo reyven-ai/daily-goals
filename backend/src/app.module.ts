@@ -5,7 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
-import { DummyModule } from './dummy/dummy.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core'; // Import APP_GUARD
+import { AuthGuard } from './auth/guard/auth.guard';
 
 @Module({
   imports: [
@@ -16,9 +18,16 @@ import { DummyModule } from './dummy/dummy.module';
       playground: true,
       introspection: true,
     }),
-    DummyModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

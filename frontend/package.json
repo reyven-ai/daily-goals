@@ -11,8 +11,9 @@
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
-    "@apollo/client": "^3.11.3",
+    "@apollo/client": "^3.11.4",
     "@clerk/clerk-react": "^5.4.1",
+    "@clerk/elements": "^0.14.0",
     "@graphql-codegen/typescript": "^4.0.9",
     "@graphql-codegen/typescript-operations": "^4.2.3",
     "@graphql-codegen/typescript-react-apollo": "^4.3.0",
