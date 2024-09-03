@@ -4,7 +4,6 @@
 
 input CreateJournalInput {
   content: String!
-  id: String
   title: String!
 }
 
@@ -14,7 +13,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Journal {
-  content: String!
+  content: String
   createdAt: DateTime!
   id: String!
   title: String!
@@ -37,7 +36,6 @@ type Query {
 
 input UpdateJournalInput {
   content: String!
-  id: String
   title: String!
 }
 

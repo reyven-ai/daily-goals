@@ -11,8 +11,8 @@ export class Journal {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
-  content: string;
+  @Field(() => String, { nullable: true })
+  content?: string;
 
   @Field()
   createdAt: Date;

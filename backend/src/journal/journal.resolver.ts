@@ -4,19 +4,21 @@ import { Journal } from './entities/journal.entity';
 import { CreateJournalInput } from './dto/create-journal.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateJournalInput } from './dto/update-journal.input';
+import { UserService } from '../user/user.service';
 
 @Resolver(() => Journal)
 export class JournalResolver {
   constructor(
     private readonly journalService: JournalService,
     private readonly prisma: PrismaService,
+    private readonly userService: UserService,
   ) {}
 
   @Query(() => [Journal], { nullable: true })
   async getJournals(@Context() context): Promise<Journal[]> {
     const authId = context.req.user.sub;
 
-    const user = await this.journalService.getUserByAuthId(authId);
+    const user = await this.userService.getUserByAuthId(authId);
 
     if (!user) {
       throw new Error('User not found');
@@ -32,7 +34,7 @@ export class JournalResolver {
   ): Promise<Journal> {
     const authId = context.req.user.sub;
 
-    const user = await this.journalService.getUserByAuthId(authId);
+    const user = await this.userService.getUserByAuthId(authId);
 
     if (!user) {
       throw new Error('User not found');
@@ -97,8 +99,8 @@ export class JournalResolver {
       await this.journalService.removeJournal(id);
       return true;
     } catch (error) {
-      console.error('Error removing journal:', error);
-      return false;
+      console.error('Error removing journal:', error.message);
+      throw new Error('Error removing journal');
     }
   }
 }

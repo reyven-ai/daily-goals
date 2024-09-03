@@ -12,10 +12,6 @@ export class JournalService {
     private readonly authService: AuthService,
   ) {}
 
-  async getUserByAuthId(authId: string) {
-    return this.prisma.user.findUnique({ where: { authId } });
-  }
-
   async getJournals(userId: string): Promise<Journal[]> {
     return this.prisma.journal.findMany({
       where: { userId },
