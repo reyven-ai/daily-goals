@@ -1,0 +1,44 @@
+query GetJournals {
+  getJournals {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+query GetJournal($id: String!) {
+  getJournal(id: $id) {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateJournal($title: String!, $content: String!) {
+  createJournal(input: { title: $title, content: $content }) {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateJournal($id: String!, $title: String!, $content: String!) {
+  updateJournal(id: $id, input: { title: $title, content: $content }) {
+    id
+    userId
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+mutation RemoveJournal($id: String!) {
+  removeJournal(id: $id)
+}

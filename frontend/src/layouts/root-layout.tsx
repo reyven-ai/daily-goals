@@ -1,12 +1,18 @@
+import PrivateRoutes from "@/routes/private.routes";
 import { Outlet } from "react-router-dom";
+import Sidebar from "../journal/layouts/Sidebar";
 
 export default function RootLayout() {
   return (
     <>
-      <header className="header"></header>
-      <main>
-        <Outlet />
-      </main>
+      <div className="flex">
+        <PrivateRoutes>
+          <Sidebar />
+        </PrivateRoutes>
+        <main>
+          <Outlet />
+        </main>
+      </div>
     </>
   );
 }

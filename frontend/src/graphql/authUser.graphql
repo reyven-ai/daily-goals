@@ -1,5 +1,5 @@
 mutation AuthUser($token: String!, $email: String!, $name: String!) {
-  authUser(id: $id, token: $token, email: $email, name: $name) {
+  authUser(token: $token, email: $email, name: $name) {
     id
     email
     name
