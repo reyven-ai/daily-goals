@@ -98,7 +98,7 @@ export type AuthUserMutationVariables = Exact<{
 }>;
 
 
-export type AuthUserMutation = { __typename?: 'Mutation', authUser: { __typename?: 'User', email: string, name: string } };
+export type AuthUserMutation = { __typename?: 'Mutation', authUser: { __typename?: 'User', id: string, email: string, name: string } };
 
 export type GetJournalsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -140,6 +140,7 @@ export type RemoveJournalMutation = { __typename?: 'Mutation', removeJournal: bo
 export const AuthUserDocument = gql`
     mutation AuthUser($token: String!, $email: String!, $name: String!) {
   authUser(token: $token, email: $email, name: $name) {
+    id
     email
     name
   }

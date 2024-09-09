@@ -7,6 +7,7 @@ import {
   useRemoveJournalMutation,
   useUpdateJournalMutation,
 } from "@/graphql/generated";
+import { categorizeJournals } from "../utils/formatDate";
 
 const handleError = (error: unknown, message: string): void => {
   console.error(message, error);
@@ -31,8 +32,8 @@ export function useCreateJournal() {
         refetch();
         navigate(`/journals/${newJournalId}`);
       }
-    } catch (error) {
-      handleError(error, "Error creating journal:");
+    } catch (err) {
+      handleError(err, "Error creating journal:");
     }
   };
 
@@ -73,7 +74,7 @@ export function useUpdateJournal() {
           variables: { id, title: newTitle, content: newContent },
         });
       } catch (err) {
-        console.error("Error saving journal:", err);
+        handleError(err, "Error saving journal:");
       } finally {
         setIsSaving(false);
       }
@@ -180,10 +181,25 @@ export default function useGetJournals() {
     navigate(`/journals/${journalId}`);
   };
 
+  const journals = data?.getJournals
+    ? [...data.getJournals].sort((a, b) => {
+        const updatedAtDiff =
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        if (updatedAtDiff !== 0) return updatedAtDiff;
+
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      })
+    : [];
+
+  const groupedJournals = categorizeJournals(journals);
+
   return {
+    journals,
+    groupedJournals,
     loading,
     error,
-    data,
     selectedId,
     handleDeleteJournal,
     handleSelectJournal,

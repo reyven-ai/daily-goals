@@ -1,5 +1,7 @@
+import { ReactNode } from "react";
+
 export interface MenuLink {
   path: string;
   name: string;
-  img: string;
+  icon: ReactNode;
 }
