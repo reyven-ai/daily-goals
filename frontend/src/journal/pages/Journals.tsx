@@ -4,6 +4,7 @@ import useGetJournals from "../hooks/useJournal";
 import { formatDateJournal } from "../utils/formatDate";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { cn } from "@/components/lib/utils";
+import { stripHtmlTags } from "../utils/stripHtmlTags";
 
 const JournalsList: React.FC = () => {
   const {
@@ -61,7 +62,7 @@ const JournalsList: React.FC = () => {
                       {journal.title}
                     </p>
                     <p className="text-[13px] text-ellipsis overflow-hidden whitespace-nowrap">
-                      {journal.content}
+                      {stripHtmlTags(journal.content)}
                     </p>
                     <p className="text-[13px] text-black text-opacity-65">
                       {formatDateJournal(journal.updatedAt)}

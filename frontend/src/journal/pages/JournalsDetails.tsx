@@ -1,6 +1,9 @@
+import React from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useUpdateJournal } from "../hooks/useJournal";
+import { modules } from "../utils/textEditor";
 
 const JournalDetails: React.FC = () => {
   const {
@@ -18,18 +21,16 @@ const JournalDetails: React.FC = () => {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const textarea = document.getElementById(
-        "journalContent"
-      ) as HTMLTextAreaElement;
-      if (textarea) {
-        textarea.focus();
+      const quill = document.querySelector(".ql-editor") as HTMLElement;
+      if (quill) {
+        quill.focus();
       }
     }
   };
 
   return (
     <div className="w-[1200px]">
-      <div className="pt-[1rem]">
+      <div className="">
         <div>
           <Input
             id="journalTitle"
@@ -37,14 +38,15 @@ const JournalDetails: React.FC = () => {
             value={title}
             onChange={handleTitleChange}
             onKeyDown={handleKeyPress}
-            className="border-none focus:outline-none focus:border-none font-bold text-[20px] mb-1 w-full"
+            className="border-none focus:outline-none focus:border-none font-bold text-[20px] mb-2 mt-2 w-full"
           />
         </div>
         <div>
-          <Textarea
+          <ReactQuill
             id="journalContent"
             value={content}
             onChange={handleContentChange}
+            modules={modules}
             className="border-none w-full h-[100vh]"
           />
         </div>

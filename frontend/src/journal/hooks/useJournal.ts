@@ -23,7 +23,7 @@ export function useCreateJournal() {
   const handleCreateNewJournal = async (): Promise<void> => {
     try {
       const response = await createJournal({
-        variables: { title: "Untitled", content: "What’s on my mind" },
+        variables: { title: "Untitled", content: "What’s on my mind..." },
       });
 
       const newJournalId = response.data?.createJournal?.id;
@@ -54,20 +54,30 @@ export function useUpdateJournal() {
   const [content, setContent] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
+  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
+
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null
   );
 
   useEffect(() => {
-    if (data?.getJournal) {
+    if (id && data?.getJournal) {
       setTitle(data.getJournal.title);
       setContent(data.getJournal.content ?? "");
+      setInitialLoaded(true);
+    } else if (!id) {
+      setTitle("Untitled");
+      setContent("");
+      setInitialLoaded(true);
     }
-  }, [data]);
+  }, [id, data]);
 
   const saveJournal = useCallback(
     async (newTitle: string, newContent: string): Promise<void> => {
-      if (!id) return;
+      if (!id || !initialLoaded) return;
+
+      if (newTitle === title && newContent === content) return;
+
       setIsSaving(true);
       try {
         await updateJournal({
@@ -79,7 +89,7 @@ export function useUpdateJournal() {
         setIsSaving(false);
       }
     },
-    [id, updateJournal]
+    [id, title, content, initialLoaded, updateJournal]
   );
 
   const debounceSaveJournal = useCallback(
@@ -101,10 +111,7 @@ export function useUpdateJournal() {
     debounceSaveJournal(newTitle, content);
   };
 
-  const handleContentChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ): void => {
-    const newContent = e.target.value;
+  const handleContentChange = (newContent: string): void => {
     setContent(newContent);
     debounceSaveJournal(title, newContent);
   };
@@ -119,7 +126,6 @@ export function useUpdateJournal() {
     error,
   };
 }
-
 export default function useGetJournals() {
   const { loading, error, data, refetch } = useGetJournalsQuery();
   const { id: selectedIdFromParams } = useParams<{ id: string }>();
