@@ -1,9 +1,9 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-import JournalsList from "../pages/Journals";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import JournalsList from '../pages/Journals';
 
-import { useCreateJournal } from "../hooks/useJournal";
-import { IoCreateOutline } from "react-icons/io5";
+import { useCreateJournal } from '../hooks/useJournal';
+import { IoCreateOutline } from 'react-icons/io5';
 
 export default function RootJournal() {
   const { handleCreateNewJournal } = useCreateJournal();
@@ -15,11 +15,7 @@ export default function RootJournal() {
         </div>
         <div className="flex flex-col">
           <div className="w-[1200px] flex border-b justify-between p-1.5">
-            <button
-              onClick={handleCreateNewJournal}
-              className="pl-4 p-1 text-[#7d7d7d] text-[24px]"
-            >
-              {/* <img src={create} alt="Create New Journal" /> */}
+            <button onClick={handleCreateNewJournal} className="pl-4 p-1 text-[#7d7d7d] text-[24px]">
               <IoCreateOutline strokeWidth={10} />
             </button>
           </div>
