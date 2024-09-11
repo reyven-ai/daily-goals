@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   useCreateJournalMutation,
   useGetJournalQuery,
   useGetJournalsQuery,
   useRemoveJournalMutation,
   useUpdateJournalMutation,
-} from "@/graphql/generated";
-import { categorizeJournals } from "../utils/formatDate";
+} from '@/graphql/generated';
+import { categorizeJournals } from '../utils/formatDate';
 
 const handleError = (error: unknown, message: string): void => {
   console.error(message, error);
@@ -23,7 +23,7 @@ export function useCreateJournal() {
   const handleCreateNewJournal = async (): Promise<void> => {
     try {
       const response = await createJournal({
-        variables: { title: "Untitled", content: "What’s on my mind" },
+        variables: { title: 'Untitled', content: 'What’s on my mind...' },
       });
 
       const newJournalId = response.data?.createJournal?.id;
@@ -33,7 +33,7 @@ export function useCreateJournal() {
         navigate(`/journals/${newJournalId}`);
       }
     } catch (err) {
-      handleError(err, "Error creating journal:");
+      handleError(err, 'Error creating journal:');
     }
   };
 
@@ -46,40 +46,50 @@ export function useCreateJournal() {
 export function useUpdateJournal() {
   const { id } = useParams<{ id: string }>();
   const { loading, error, data } = useGetJournalQuery({
-    variables: { id: id || "" },
+    variables: { id: id || '' },
   });
 
   const [updateJournal] = useUpdateJournalMutation();
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
+
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (data?.getJournal) {
+    if (id && data?.getJournal) {
       setTitle(data.getJournal.title);
-      setContent(data.getJournal.content ?? "");
+      setContent(data.getJournal.content ?? '');
+      setInitialLoaded(true);
+    } else if (!id) {
+      setTitle('Untitled');
+      setContent('');
+      setInitialLoaded(true);
     }
-  }, [data]);
+  }, [id, data]);
 
   const saveJournal = useCallback(
     async (newTitle: string, newContent: string): Promise<void> => {
-      if (!id) return;
+      if (!id || !initialLoaded) return;
+
+      if (newTitle === title && newContent === content) {
+        return;
+      }
+
       setIsSaving(true);
       try {
         await updateJournal({
           variables: { id, title: newTitle, content: newContent },
         });
       } catch (err) {
-        handleError(err, "Error saving journal:");
+        handleError(err, 'Error saving journal:');
       } finally {
         setIsSaving(false);
       }
     },
-    [id, updateJournal]
+    [id, title, content, initialLoaded, updateJournal]
   );
 
   const debounceSaveJournal = useCallback(
@@ -101,10 +111,7 @@ export function useUpdateJournal() {
     debounceSaveJournal(newTitle, content);
   };
 
-  const handleContentChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ): void => {
-    const newContent = e.target.value;
+  const handleContentChange = (newContent: string): void => {
     setContent(newContent);
     debounceSaveJournal(title, newContent);
   };
@@ -119,14 +126,11 @@ export function useUpdateJournal() {
     error,
   };
 }
-
 export default function useGetJournals() {
   const { loading, error, data, refetch } = useGetJournalsQuery();
   const { id: selectedIdFromParams } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState<string | null>(
-    selectedIdFromParams || null
-  );
+  const [selectedId, setSelectedId] = useState<string | null>(selectedIdFromParams || null);
   const [removeJournal] = useRemoveJournalMutation();
 
   const [prevJournalCount, setPrevJournalCount] = useState<number>(0);
@@ -141,8 +145,7 @@ export default function useGetJournals() {
   useEffect(() => {
     if (shouldNavigate && data?.getJournals && data.getJournals.length > 0) {
       const sortedJournals = [...data.getJournals].sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       const newestJournal = sortedJournals[0];
       if (newestJournal && newestJournal.id !== selectedId) {
@@ -160,8 +163,7 @@ export default function useGetJournals() {
       const { data: refetchedData } = await refetch();
       const journals = refetchedData?.getJournals || [];
       const sortedJournals = [...journals].sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       const nextJournal = sortedJournals[0];
       if (nextJournal) {
@@ -169,10 +171,10 @@ export default function useGetJournals() {
         navigate(`/journals/${nextJournal.id}`);
       } else {
         setSelectedId(null);
-        navigate("/journals");
+        navigate('/journals');
       }
     } catch (err) {
-      handleError(err, "Error deleting journal:");
+      handleError(err, 'Error deleting journal:');
     }
   };
 
@@ -183,13 +185,10 @@ export default function useGetJournals() {
 
   const journals = data?.getJournals
     ? [...data.getJournals].sort((a, b) => {
-        const updatedAtDiff =
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        const updatedAtDiff = new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         if (updatedAtDiff !== 0) return updatedAtDiff;
 
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       })
     : [];
 
