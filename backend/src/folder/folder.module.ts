@@ -4,6 +4,7 @@ import { FolderResolver } from './folder.resolver';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
+import { JournalService } from 'src/journal/journal.service';
 
 @Module({
   providers: [
@@ -12,6 +13,7 @@ import { UserService } from 'src/user/user.service';
     PrismaService,
     AuthService,
     UserService,
+    JournalService,
   ],
 })
 export class FolderModule {}

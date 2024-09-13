@@ -3,6 +3,7 @@ import { CreateFolderInput } from './dto/create-folder.input';
 import { UpdateFolderInput } from './dto/update-folder.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Folder } from './entities/folder.entity';
+import { TITLE_MAX_LENGTH } from './folder.constants';
 
 @Injectable()
 export class FolderService {
@@ -14,25 +15,16 @@ export class FolderService {
     });
   }
 
-  async getFolder(id: string, userId: string): Promise<Folder> {
-    const folder = await this.prisma.folder.findUnique({
+  async getFolder(id: string, userId: string): Promise<Folder | null> {
+    return this.prisma.folder.findUnique({
       where: { id, userId },
-      include: { journals: true } as any,
     });
-
-    if (!folder) {
-      throw new Error('Folder not found or access denied');
-    }
-
-    return folder;
   }
 
   async createFolder(
     input: CreateFolderInput,
     userId: string,
   ): Promise<Folder> {
-    const TITLE_MAX_LENGTH = 50;
-
     const userExists = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -59,8 +51,6 @@ export class FolderService {
     id: string,
     updateFolderInput: UpdateFolderInput,
   ): Promise<Folder> {
-    const TITLE_MAX_LENGTH = 50;
-
     if (
       updateFolderInput.title &&
       updateFolderInput.title.length > TITLE_MAX_LENGTH

@@ -1,10 +1,19 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Context,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { FolderService } from './folder.service';
 import { Folder } from './entities/folder.entity';
 import { CreateFolderInput } from './dto/create-folder.input';
 import { UpdateFolderInput } from './dto/update-folder.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { JournalService } from 'src/journal/journal.service';
 
 @Resolver(() => Folder)
 export class FolderResolver {
@@ -12,9 +21,10 @@ export class FolderResolver {
     private readonly folderService: FolderService,
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly journalService: JournalService,
   ) {}
 
-  @Query(() => [Folder], { nullable: true })
+  @Query(() => [Folder])
   async getFolders(@Context() context): Promise<Folder[]> {
     const authId = context.req.user.sub;
     const user = await this.userService.getUserByAuthId(authId);
@@ -22,11 +32,15 @@ export class FolderResolver {
     if (!user) {
       throw new Error('User not found');
     }
+
     return this.folderService.getFolders(user.id);
   }
 
   @Query(() => Folder, { nullable: true })
-  async getFolder(@Args('id') id: string, @Context() context): Promise<Folder> {
+  async getFolder(
+    @Args('id') id: string,
+    @Context() context,
+  ): Promise<Folder | null> {
     const authId = context.req.user.sub;
 
     const user = await this.userService.getUserByAuthId(authId);
@@ -36,6 +50,12 @@ export class FolderResolver {
     }
 
     return this.folderService.getFolder(id, user.id);
+  }
+
+  @ResolveField()
+  async journals(@Parent() folder: Folder) {
+    const { id } = folder;
+    return this.journalService.getJournalsByFolderId(id);
   }
 
   @Mutation(() => Folder)

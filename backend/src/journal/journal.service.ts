@@ -3,14 +3,16 @@ import { CreateJournalInput } from './dto/create-journal.input';
 import { UpdateJournalInput } from './dto/update-journal.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Journal } from './entities/journal.entity';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class JournalService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
+
+  async getJournalsByFolderId(folderId: string): Promise<Journal[]> {
+    return this.prisma.journal.findMany({
+      where: { folderId },
+    });
+  }
 
   async getJournals(userId: string): Promise<Journal[]> {
     return this.prisma.journal.findMany({

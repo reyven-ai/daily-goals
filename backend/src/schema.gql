@@ -49,13 +49,13 @@ type Mutation {
 type Query {
   getAllUsers: [User!]!
   getFolder(id: String!): Folder
-  getFolders: [Folder!]
+  getFolders: [Folder!]!
   getJournal(id: String!): Journal
   getJournals: [Journal!]
 }
 
 input UpdateFolderInput {
-  title: String!
+  title: String
 }
 
 input UpdateJournalInput {

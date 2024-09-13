@@ -1,8 +1,5 @@
 import { CreateFolderInput } from './create-folder.input';
-import { InputType, Field, PartialType } from '@nestjs/graphql';
+import { InputType, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateFolderInput extends PartialType(CreateFolderInput) {
-  @Field()
-  title: string;
-}
+export class UpdateFolderInput extends PartialType(CreateFolderInput) {}
