@@ -1,25 +1,23 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { Journal } from '../../journal/entities/journal.entity';
 
 @ObjectType()
-export class Journal {
+export class Folder {
   @Field(() => String)
   id: string;
 
-  @Field(() => String)
+  @Field()
   userId: string;
 
-  @Field(() => String)
-  folderId: string;
-
-  @Field(() => String)
+  @Field()
   title: string;
-
-  @Field(() => String, { nullable: true })
-  content?: string;
 
   @Field()
   createdAt: Date;
 
   @Field()
   updatedAt: Date;
+
+  @Field(() => [Journal], { nullable: true })
+  journals?: Journal[];
 }

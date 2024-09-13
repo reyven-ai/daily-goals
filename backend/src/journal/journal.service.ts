@@ -33,6 +33,7 @@ export class JournalService {
   async createJournal(
     input: CreateJournalInput,
     userId: string,
+    folderId: string,
   ): Promise<Journal> {
     const TITLE_MAX_LENGTH = 100;
     const CONTENT_MAX_LENGTH = 5000;
@@ -58,6 +59,7 @@ export class JournalService {
         title: input.title,
         content: input.content,
         userId: userId,
+        folderId: folderId,
       },
     });
 
