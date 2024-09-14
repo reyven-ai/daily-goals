@@ -54,7 +54,8 @@ export class JournalResolver {
       throw new Error('User not found');
     }
     const userId = user.id;
-    return this.journalService.createJournal(input, userId);
+    const folderId = input.folderId;
+    return this.journalService.createJournal(input, userId, folderId);
   }
 
   @Mutation(() => Journal)
