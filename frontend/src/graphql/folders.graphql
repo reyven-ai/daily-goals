@@ -1,0 +1,61 @@
+query GetFolders {
+  getFolders {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+    journals {
+      id
+      userId
+      folderId
+      title
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query GetFolder($id: String!) {
+  getFolder(id: $id) {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+    journals {
+      id
+      userId
+      folderId
+      title
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation CreateFolder($title: String!) {
+  createFolder(input: { title: $title }) {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateFolder($id: String!, $title: String!) {
+  updateFolder(id: $id, input: { title: $title }) {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+  }
+}
+
+mutation RemoveFolder($id: String!) {
+  removeFolder(id: $id)
+}
