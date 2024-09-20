@@ -18,21 +18,27 @@ export default function App() {
       <ClerkProviderWrapper>
         <ApolloProviderWrapper>
           <AuthProvider>
-            <FolderProvider>
-              <Routes>
-                <Route path="/" element={<RootLayout />}>
-                  <Route path="journals" element={<RootJournal />}>
-                    <Route path=":id" element={<JournalDetails />} />
-                  </Route>
-                  <Route path="sign-in" element={<SignInPage />} />
-                  <Route path="sign-up" element={<SignUpPage />} />
-                  <Route path="sign-up/verify-email-address" element={<Verify />} />
-                  <Route path="sign-up/continue" element={<Continue />} />
-                  <Route path="sign-up/sso-callback" element={<AuthenticateWithRedirectCallback />} />
-                  <Route path="*" element={<SignInPage />} />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <FolderProvider>
+                    <RootLayout />
+                  </FolderProvider>
+                }
+              >
+                <Route path="journals" element={<RootJournal />}>
+                  <Route path=":id" element={<JournalDetails />} />
                 </Route>
-              </Routes>
-            </FolderProvider>
+              </Route>
+
+              <Route path="sign-in" element={<SignInPage />} />
+              <Route path="sign-up" element={<SignUpPage />} />
+              <Route path="sign-up/verify-email-address" element={<Verify />} />
+              <Route path="sign-up/continue" element={<Continue />} />
+              <Route path="sign-up/sso-callback" element={<AuthenticateWithRedirectCallback />} />
+              <Route path="*" element={<SignInPage />} />
+            </Routes>
           </AuthProvider>
         </ApolloProviderWrapper>
       </ClerkProviderWrapper>

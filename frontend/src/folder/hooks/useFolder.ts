@@ -4,11 +4,12 @@ import {
   useRemoveFolderMutation,
   useUpdateFolderMutation,
 } from '@/graphql/generated';
-import { useEffect, useState, useRef, ChangeEvent, FormEvent } from 'react';
+import { useEffect, useState, useRef, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleError } from '@/utils/errorHandler';
 import { useInputFocus } from '@/utils/inputFocus';
 import { useFolderContext } from './useFolderContext';
+import { useForm } from 'react-hook-form';
 
 const useFolderActions = () => {
   const { selectedFolderId, setSelectedFolderId, setSelectedFolderTitle, selectedFolderTitle } = useFolderContext();
@@ -70,6 +71,12 @@ const useFolderActions = () => {
     setSelectedFolderTitle(title);
   };
 
+  const form = useForm({
+    defaultValues: {
+      folderName: '',
+    },
+  });
+
   const handleCreateNewFolder = async (folderName: string) => {
     setLoading(true);
     try {
@@ -123,11 +130,10 @@ const useFolderActions = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (folderName.trim()) {
-      await handleCreateNewFolder(folderName);
-      setFolderName('');
+  const handleSubmit = async (data: { folderName: string }) => {
+    if (data.folderName.trim()) {
+      await handleCreateNewFolder(data.folderName);
+      form.reset();
       setIsModalOpen(false);
     } else {
       alert("Folder name can't be empty");
@@ -162,7 +168,7 @@ const useFolderActions = () => {
     toggleOptions: () => setShowOptions((prev) => !prev),
     handleCreateNewFolder,
     handleInputChange: (e: ChangeEvent<HTMLInputElement>) => setFolderName(e.target.value),
-    handleSubmit,
+    handleSubmit: form.handleSubmit(handleSubmit),
     handleUpdateFolder,
     handleDeleteFolder,
     handleSelectFolder: selectFolder,
@@ -187,6 +193,7 @@ const useFolderActions = () => {
       }
     },
     handleClick,
+    form,
   };
 };
 
