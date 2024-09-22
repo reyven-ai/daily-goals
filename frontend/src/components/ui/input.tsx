@@ -1,16 +1,26 @@
-import * as React from "react";
-import { cn } from "../lib/utils";
+import * as React from 'react';
+import { cn } from '../lib/utils';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: 'default' | 'fTitle' | 'jTitle';
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, variant = 'default', type, ...props }, ref) => {
+    const variantClasses = {
+      default:
+        'border border-input px-3 rounded-md bg-background text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+      fTitle:
+        'border-none text-[18px] font-bold bg-custom-background text-custom-placeholder rounded-lg focus-visible:ring-2 focus-visible:ring-custom focus-visible:ring-offset-2 focus-visible:outline-none',
+      jTitle: 'border-none px-3 focus:outline-none focus:border-none font-bold text-[20px] mb-2 mt-2 w-full',
+    };
+
     return (
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          'flex h-10 w-full ring-offset-background disabled:cursor-not-allowed disabled:opacity-50',
+          variantClasses[variant],
           className
         )}
         ref={ref}
@@ -19,6 +29,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-Input.displayName = "Input";
+
+Input.displayName = 'Input';
 
 export { Input };

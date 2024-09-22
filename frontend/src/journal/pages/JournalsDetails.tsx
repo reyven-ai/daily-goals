@@ -32,7 +32,7 @@ const JournalDetails: React.FC = () => {
             value={title}
             onChange={handleTitleChange}
             onKeyDown={handleKeyPress}
-            className="border-none focus:outline-none focus:border-none font-bold text-[20px] mb-2 mt-2 w-full"
+            variant="jTitle"
           />
         </div>
         <div>

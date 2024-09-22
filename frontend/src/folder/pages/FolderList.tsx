@@ -20,8 +20,8 @@ const FolderList: React.FC = () => {
                 to="/journals/"
                 onClick={() => handleSelectFolder(folder.id, folder.title)}
                 className={cn(
-                  'w-[230px] py-2 px-4 my-1 flex justify-between items-center text-[14px] hover:bg-[#ececec] hover:text-[#000]',
-                  selectedFolderId === folder.id ? 'bg-[#ececec] text-[#000]' : 'text-[#7d7d7d]'
+                  'w-[230px] py-2 px-4 my-1 flex justify-between items-center text-[14px] hover:bg-popover-foreground hover:text-primary',
+                  selectedFolderId === folder.id ? 'bg-popover-foreground text-primary' : 'text-secondary'
                 )}
               >
                 <div className="flex gap-[16px] items-center">
@@ -30,7 +30,7 @@ const FolderList: React.FC = () => {
                   </span>
                   <span>{folder.title}</span>
                 </div>
-                <span className="text-sm text-gray-500">{folder.journals?.length || 0}</span>
+                <span className="text-sm">{folder.journals?.length || 0}</span>
               </Link>
             </li>
           ))}
