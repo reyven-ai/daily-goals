@@ -7,23 +7,33 @@ import {
   useRemoveJournalMutation,
   useUpdateJournalMutation,
 } from '@/graphql/generated';
-import { categorizeJournals } from '../utils/formatDate';
+import { categorizeJournals } from '@/utils/formatDate';
+import { useFolderContext } from '@/folder/hooks/useFolderContext';
 
 const handleError = (error: unknown, message: string): void => {
   console.error(message, error);
 };
 
 export function useCreateJournal() {
+  const { selectedFolderId } = useFolderContext();
   const { refetch } = useGetJournalsQuery();
   const [createJournal] = useCreateJournalMutation();
   const navigate = useNavigate();
-
   const [journalId, setJournalId] = useState<string | null>(null);
 
   const handleCreateNewJournal = async (): Promise<void> => {
+    if (!selectedFolderId) {
+      console.error('No folder selected');
+      return;
+    }
+
     try {
       const response = await createJournal({
-        variables: { title: 'Untitled', content: 'What’s on my mind...' },
+        variables: {
+          folderId: selectedFolderId,
+          title: 'Untitled',
+          content: 'What’s on my mind...',
+        },
       });
 
       const newJournalId = response.data?.createJournal?.id;
@@ -33,7 +43,7 @@ export function useCreateJournal() {
         navigate(`/journals/${newJournalId}`);
       }
     } catch (err) {
-      handleError(err, 'Error creating journal:');
+      console.error('Error creating journal:', err);
     }
   };
 
@@ -126,7 +136,9 @@ export function useUpdateJournal() {
     error,
   };
 }
+
 export default function useGetJournals() {
+  const { selectedFolderId } = useFolderContext();
   const { loading, error, data, refetch } = useGetJournalsQuery();
   const { id: selectedIdFromParams } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -137,14 +149,19 @@ export default function useGetJournals() {
   const [shouldNavigate, setShouldNavigate] = useState<boolean>(false);
 
   useEffect(() => {
-    const currentJournalCount = data?.getJournals?.length || 0;
+    const currentJournalCount =
+      data?.getJournals?.filter((journal) => journal.folderId === selectedFolderId)?.length || 0;
+    if (selectedFolderId) {
+      setShouldNavigate(true);
+    }
     if (currentJournalCount > prevJournalCount) setShouldNavigate(true);
     setPrevJournalCount(currentJournalCount);
-  }, [data, prevJournalCount]);
+  }, [data, prevJournalCount, selectedFolderId]);
 
   useEffect(() => {
-    if (shouldNavigate && data?.getJournals && data.getJournals.length > 0) {
-      const sortedJournals = [...data.getJournals].sort(
+    if (!loading && shouldNavigate && data?.getJournals && data.getJournals.length > 0) {
+      const filteredJournals = data.getJournals.filter((journal) => journal.folderId === selectedFolderId);
+      const sortedJournals = [...filteredJournals].sort(
         (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       const newestJournal = sortedJournals[0];
@@ -154,14 +171,14 @@ export default function useGetJournals() {
         setShouldNavigate(false);
       }
     }
-  }, [shouldNavigate, data, selectedId, navigate]);
+  }, [loading, shouldNavigate, data, selectedId, navigate, selectedFolderId]);
 
   const handleDeleteJournal = async (): Promise<void> => {
     if (!selectedId) return;
     try {
       await removeJournal({ variables: { id: selectedId } });
       const { data: refetchedData } = await refetch();
-      const journals = refetchedData?.getJournals || [];
+      const journals = refetchedData?.getJournals.filter((journal) => journal.folderId === selectedFolderId) || [];
       const sortedJournals = [...journals].sort(
         (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
@@ -184,19 +201,30 @@ export default function useGetJournals() {
   };
 
   const journals = data?.getJournals
-    ? [...data.getJournals].sort((a, b) => {
-        const updatedAtDiff = new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-        if (updatedAtDiff !== 0) return updatedAtDiff;
+    ? [...data.getJournals]
+        .filter((journal) => journal.folderId === selectedFolderId)
+        .sort((a, b) => {
+          const updatedAtDiff = new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          if (updatedAtDiff !== 0) return updatedAtDiff;
 
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      })
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        })
     : [];
 
   const groupedJournals = categorizeJournals(journals);
 
+  const filteredGroupedJournals = selectedFolderId
+    ? Object.fromEntries(
+        Object.entries(groupedJournals).filter(([_, journals]) =>
+          journals.some((journal) => journal.folderId === selectedFolderId)
+        )
+      )
+    : groupedJournals;
+
   return {
     journals,
     groupedJournals,
+    filteredGroupedJournals,
     loading,
     error,
     selectedId,

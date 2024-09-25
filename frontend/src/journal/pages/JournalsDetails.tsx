@@ -1,27 +1,21 @@
-import React from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { Input } from "@/components/ui/input";
-import { useUpdateJournal } from "../hooks/useJournal";
-import { modules } from "../utils/textEditor";
+import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { Input } from '@/components/ui/input';
+import { useUpdateJournal } from '../hooks/useJournal';
+import { modules } from '@/utils/textEditor';
 
 const JournalDetails: React.FC = () => {
-  const {
-    loading,
-    error,
-    title,
-    content,
-    handleTitleChange,
-    handleContentChange,
-  } = useUpdateJournal();
+  const { loading, error, title, content, handleTitleChange, handleContentChange } = useUpdateJournal();
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading journal details: {error.message}</p>;
+
+  if (error) return null;
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      const quill = document.querySelector(".ql-editor") as HTMLElement;
+      const quill = document.querySelector('.ql-editor') as HTMLElement;
       if (quill) {
         quill.focus();
       }
@@ -38,7 +32,7 @@ const JournalDetails: React.FC = () => {
             value={title}
             onChange={handleTitleChange}
             onKeyDown={handleKeyPress}
-            className="border-none focus:outline-none focus:border-none font-bold text-[20px] mb-2 mt-2 w-full"
+            variant="jTitle"
           />
         </div>
         <div>

@@ -1,6 +1,8 @@
 query GetJournals {
   getJournals {
     id
+    userId
+    folderId
     title
     content
     createdAt
@@ -11,6 +13,8 @@ query GetJournals {
 query GetJournal($id: String!) {
   getJournal(id: $id) {
     id
+    userId
+    folderId
     title
     content
     createdAt
@@ -18,9 +22,11 @@ query GetJournal($id: String!) {
   }
 }
 
-mutation CreateJournal($title: String!, $content: String!) {
-  createJournal(input: { title: $title, content: $content }) {
+mutation CreateJournal($folderId: String!, $title: String!, $content: String!) {
+  createJournal(input: { folderId: $folderId, title: $title, content: $content }) {
     id
+    userId
+    folderId
     title
     content
     createdAt
@@ -31,6 +37,8 @@ mutation CreateJournal($title: String!, $content: String!) {
 mutation UpdateJournal($id: String!, $title: String!, $content: String!) {
   updateJournal(id: $id, input: { title: $title, content: $content }) {
     id
+    userId
+    folderId
     userId
     title
     content
