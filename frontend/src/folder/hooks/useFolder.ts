@@ -23,17 +23,10 @@ const useFolderActions = () => {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderName, setFolderName] = useState('');
   const [newTitle, setNewTitle] = useState(selectedFolderTitle || '');
 
   const optionsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isModalOpen) {
-      focusInput();
-    }
-  }, [isModalOpen, focusInput]);
 
   useEffect(() => {
     if (!selectedFolderId && data?.getFolders?.length) {
@@ -134,18 +127,12 @@ const useFolderActions = () => {
     if (data.folderName.trim()) {
       await handleCreateNewFolder(data.folderName);
       form.reset();
-      setIsModalOpen(false);
     } else {
       alert("Folder name can't be empty");
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleClick = () => {
-    openModal();
     focusInput();
   };
 
@@ -158,13 +145,10 @@ const useFolderActions = () => {
     showOptions,
     inputRef,
     optionsRef,
-    isModalOpen,
     folderName,
     sortedFolders: getSortedFolders(data?.getFolders || []),
     selectedFolderId,
     selectedFolderTitle,
-    openModal: () => setIsModalOpen(true),
-    closeModal: () => setIsModalOpen(false),
     toggleOptions: () => setShowOptions((prev) => !prev),
     handleCreateNewFolder,
     handleInputChange: (e: ChangeEvent<HTMLInputElement>) => setFolderName(e.target.value),
