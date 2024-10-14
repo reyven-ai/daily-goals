@@ -9,6 +9,7 @@ import {
 } from '@/graphql/generated';
 import { categorizeJournals } from '@/utils/formatDate';
 import { useFolderContext } from '@/folder/hooks/useFolderContext';
+import { useJournalContext } from './useJournalContext';
 
 const handleError = (error: unknown, message: string): void => {
   console.error(message, error);
@@ -140,9 +141,8 @@ export function useUpdateJournal() {
 export default function useGetJournals() {
   const { selectedFolderId } = useFolderContext();
   const { loading, error, data, refetch } = useGetJournalsQuery();
-  const { id: selectedIdFromParams } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState<string | null>(selectedIdFromParams || null);
+  const { selectedId, setSelectedId } = useJournalContext();
   const [removeJournal] = useRemoveJournalMutation();
 
   const [prevJournalCount, setPrevJournalCount] = useState<number>(0);
@@ -151,12 +151,15 @@ export default function useGetJournals() {
   useEffect(() => {
     const currentJournalCount =
       data?.getJournals?.filter((journal) => journal.folderId === selectedFolderId)?.length || 0;
-    if (selectedFolderId) {
+
+    if (selectedFolderId && !selectedId) {
       setShouldNavigate(true);
     }
+
     if (currentJournalCount > prevJournalCount) setShouldNavigate(true);
+
     setPrevJournalCount(currentJournalCount);
-  }, [data, prevJournalCount, selectedFolderId]);
+  }, [data, prevJournalCount, selectedFolderId, selectedId]);
 
   useEffect(() => {
     if (!loading && shouldNavigate && data?.getJournals && data.getJournals.length > 0) {
@@ -164,10 +167,11 @@ export default function useGetJournals() {
       const sortedJournals = [...filteredJournals].sort(
         (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
-      const newestJournal = sortedJournals[0];
-      if (newestJournal && newestJournal.id !== selectedId) {
-        setSelectedId(newestJournal.id);
-        navigate(`/journals/${newestJournal.id}`);
+      const firstJournal = sortedJournals[0];
+
+      if (firstJournal && (!selectedId || selectedId === '')) {
+        setSelectedId(firstJournal.id);
+        navigate(`/journals/${firstJournal.id}`);
         setShouldNavigate(false);
       }
     }

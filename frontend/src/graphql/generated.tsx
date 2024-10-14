@@ -106,6 +106,8 @@ export type Query = {
   getFolders: Array<Folder>;
   getJournal?: Maybe<Journal>;
   getJournals?: Maybe<Array<Journal>>;
+  searchFolders: Array<Folder>;
+  searchJournals: Array<Journal>;
 };
 
 
@@ -116,6 +118,16 @@ export type QueryGetFolderArgs = {
 
 export type QueryGetJournalArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QuerySearchFoldersArgs = {
+  searchQuery: Scalars['String']['input'];
+};
+
+
+export type QuerySearchJournalsArgs = {
+  searchQuery: Scalars['String']['input'];
 };
 
 export type UpdateFolderInput = {
@@ -216,6 +228,20 @@ export type RemoveJournalMutationVariables = Exact<{
 
 
 export type RemoveJournalMutation = { __typename?: 'Mutation', removeJournal: boolean };
+
+export type SearchFoldersQueryVariables = Exact<{
+  searchQuery: Scalars['String']['input'];
+}>;
+
+
+export type SearchFoldersQuery = { __typename?: 'Query', searchFolders: Array<{ __typename?: 'Folder', id: string, userId: string, title: string, createdAt: any, updatedAt: any, journals?: Array<{ __typename?: 'Journal', id: string, folderId: string, userId: string, title: string, content?: string | null, createdAt: any, updatedAt: any }> | null }> };
+
+export type SearchJournalsQueryVariables = Exact<{
+  searchQuery: Scalars['String']['input'];
+}>;
+
+
+export type SearchJournalsQuery = { __typename?: 'Query', searchJournals: Array<{ __typename?: 'Journal', id: string, folderId: string, userId: string, title: string, content?: string | null, createdAt: any, updatedAt: any }> };
 
 
 export const AuthUserDocument = gql`
@@ -671,3 +697,102 @@ export function useRemoveJournalMutation(baseOptions?: Apollo.MutationHookOption
 export type RemoveJournalMutationHookResult = ReturnType<typeof useRemoveJournalMutation>;
 export type RemoveJournalMutationResult = Apollo.MutationResult<RemoveJournalMutation>;
 export type RemoveJournalMutationOptions = Apollo.BaseMutationOptions<RemoveJournalMutation, RemoveJournalMutationVariables>;
+export const SearchFoldersDocument = gql`
+    query searchFolders($searchQuery: String!) {
+  searchFolders(searchQuery: $searchQuery) {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+    journals {
+      id
+      folderId
+      userId
+      title
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchFoldersQuery__
+ *
+ * To run a query within a React component, call `useSearchFoldersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchFoldersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchFoldersQuery({
+ *   variables: {
+ *      searchQuery: // value for 'searchQuery'
+ *   },
+ * });
+ */
+export function useSearchFoldersQuery(baseOptions: Apollo.QueryHookOptions<SearchFoldersQuery, SearchFoldersQueryVariables> & ({ variables: SearchFoldersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchFoldersQuery, SearchFoldersQueryVariables>(SearchFoldersDocument, options);
+      }
+export function useSearchFoldersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchFoldersQuery, SearchFoldersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchFoldersQuery, SearchFoldersQueryVariables>(SearchFoldersDocument, options);
+        }
+export function useSearchFoldersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchFoldersQuery, SearchFoldersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchFoldersQuery, SearchFoldersQueryVariables>(SearchFoldersDocument, options);
+        }
+export type SearchFoldersQueryHookResult = ReturnType<typeof useSearchFoldersQuery>;
+export type SearchFoldersLazyQueryHookResult = ReturnType<typeof useSearchFoldersLazyQuery>;
+export type SearchFoldersSuspenseQueryHookResult = ReturnType<typeof useSearchFoldersSuspenseQuery>;
+export type SearchFoldersQueryResult = Apollo.QueryResult<SearchFoldersQuery, SearchFoldersQueryVariables>;
+export const SearchJournalsDocument = gql`
+    query searchJournals($searchQuery: String!) {
+  searchJournals(searchQuery: $searchQuery) {
+    id
+    folderId
+    userId
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useSearchJournalsQuery__
+ *
+ * To run a query within a React component, call `useSearchJournalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchJournalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchJournalsQuery({
+ *   variables: {
+ *      searchQuery: // value for 'searchQuery'
+ *   },
+ * });
+ */
+export function useSearchJournalsQuery(baseOptions: Apollo.QueryHookOptions<SearchJournalsQuery, SearchJournalsQueryVariables> & ({ variables: SearchJournalsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchJournalsQuery, SearchJournalsQueryVariables>(SearchJournalsDocument, options);
+      }
+export function useSearchJournalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchJournalsQuery, SearchJournalsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchJournalsQuery, SearchJournalsQueryVariables>(SearchJournalsDocument, options);
+        }
+export function useSearchJournalsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchJournalsQuery, SearchJournalsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchJournalsQuery, SearchJournalsQueryVariables>(SearchJournalsDocument, options);
+        }
+export type SearchJournalsQueryHookResult = ReturnType<typeof useSearchJournalsQuery>;
+export type SearchJournalsLazyQueryHookResult = ReturnType<typeof useSearchJournalsLazyQuery>;
+export type SearchJournalsSuspenseQueryHookResult = ReturnType<typeof useSearchJournalsSuspenseQuery>;
+export type SearchJournalsQueryResult = Apollo.QueryResult<SearchJournalsQuery, SearchJournalsQueryVariables>;

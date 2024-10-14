@@ -1,4 +1,3 @@
-import { BsThreeDots } from 'react-icons/bs';
 import useFolderActions from '../hooks/useFolder';
 import { useFolderContext } from '../hooks/useFolderContext';
 import { Input } from '@/components/ui/input';
@@ -26,7 +25,9 @@ export default function EditFolder() {
       {isEditing ? (
         <Input ref={inputRef} value={newTitle} onChange={(e) => setNewTitle(e.target.value)} variant="fTitle" />
       ) : (
-        <h1 className="text-[18px] font-bold">{selectedFolderTitle}</h1>
+        <h1 className="w-[220px] text-ellipsis overflow-hidden whitespace-nowrap text-[18px] font-bold">
+          {selectedFolderTitle}
+        </h1>
       )}
 
       <div className="relative" ref={optionsRef}>

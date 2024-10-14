@@ -11,7 +11,7 @@ export default function CreateFolder() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="aBtn">
+        <Button className="px-2" variant="aBtn" size="sm">
           <span className="text-[18px] mr-[4px]">
             <AiOutlinePlus />
           </span>

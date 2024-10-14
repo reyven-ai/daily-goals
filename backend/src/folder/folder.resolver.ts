@@ -25,6 +25,21 @@ export class FolderResolver {
   ) {}
 
   @Query(() => [Folder])
+  async searchFolders(
+    @Args('searchQuery') searchQuery: string,
+    @Context() context,
+  ): Promise<Folder[]> {
+    const authId = context.req.user.sub;
+    const user = await this.userService.getUserByAuthId(authId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.folderService.searchFolders(user.id, searchQuery);
+  }
+
+  @Query(() => [Folder])
   async getFolders(@Context() context): Promise<Folder[]> {
     const authId = context.req.user.sub;
     const user = await this.userService.getUserByAuthId(authId);
