@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useSearchFoldersQuery, useSearchJournalsQuery } from '@/graphql/generated';
+import { FilterType } from '../types/filter';
 
 const useSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [, setIsSearching] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
 
   const {
     data: folderData,
@@ -34,7 +36,7 @@ const useSearch = () => {
       const debounceSearch = setTimeout(() => {
         setSearchQuery(inputValue);
         setIsSearching(true);
-      }, 3000);
+      }, 500);
 
       return () => clearTimeout(debounceSearch);
     }
@@ -64,9 +66,8 @@ const useSearch = () => {
     ...individualJournals,
   ];
 
-  const handleFilterClick = (filterName: string) => {
-    setActiveFilter(filterName);
-
+  const handleFilterClick = (filter: FilterType) => {
+    setActiveFilter(filter);
     setSearchQuery('');
     setInputValue('');
     setIsSearching(false);
@@ -86,13 +87,17 @@ const useSearch = () => {
     setInputValue(event.target.value);
   };
 
+  const folders = combinedResults.filter((item) => item.type === 'folder');
+  const journals = combinedResults.filter((item) => item.type === 'journal');
+
   return {
+    folders,
+    journals,
     searchQuery,
     setSearchQuery,
     combinedResults: finalCombinedResults,
     isLoading,
     error,
-    isSearching,
     handleFilterClick,
     onSubmit,
     handleInputChange,

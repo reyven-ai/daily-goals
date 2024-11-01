@@ -13,10 +13,13 @@ import useFolderActions from '@/folder/hooks/useFolder';
 import { CgNotes } from 'react-icons/cg';
 import { FilterJournalList } from './filter/SearchResult';
 import { Link } from 'react-router-dom';
+import { FilterType } from '../types/filter';
 
 export default function Search() {
   const { form, inputRef, handleSelectFolder, sortedFolders } = useFolderActions();
   const {
+    folders,
+    journals,
     searchQuery,
     combinedResults,
     isLoading,
@@ -59,7 +62,7 @@ export default function Search() {
                         ref={inputRef}
                         placeholder="Find your journals"
                         value={inputValue}
-                        onClick={() => handleFilterClick('search')}
+                        onClick={() => handleFilterClick(FilterType.Search)}
                         onChange={handleInputChange}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter') {
@@ -80,28 +83,28 @@ export default function Search() {
             <li>
               <ByFolder
                 isActive={activeFilter === 'folder'}
-                onClick={() => handleFilterClick('folder')}
+                onClick={() => handleFilterClick(FilterType.Folder)}
                 setIsModalOpen={setIsModalOpen}
               />
             </li>
             <li>
               <ByDate
                 isActive={activeFilter === 'date'}
-                onClick={() => handleFilterClick('date')}
+                onClick={() => handleFilterClick(FilterType.Date)}
                 setIsModalOpen={setIsModalOpen}
               />
             </li>
             <li>
               <ByNewest
                 isActive={activeFilter === 'newest'}
-                onClick={() => handleFilterClick('newest')}
+                onClick={() => handleFilterClick(FilterType.Newest)}
                 setIsModalOpen={setIsModalOpen}
               />
             </li>
             <li>
               <ByOldest
                 isActive={activeFilter === 'oldest'}
-                onClick={() => handleFilterClick('oldest')}
+                onClick={() => handleFilterClick(FilterType.Oldest)}
                 setIsModalOpen={setIsModalOpen}
               />
             </li>
@@ -118,48 +121,41 @@ export default function Search() {
           <ul className="flex flex-col w-[650px] gap-[10px] mx-auto">
             {searchQuery && combinedResults.length > 0 ? (
               <>
-                {combinedResults.some((item) => item.type === 'folder') && (
+                {folders.length > 0 && (
                   <div>
                     <p className="text-[13px] pl-2 font-normal font-semibold text-primary mb-4">Folders</p>
-
                     <ul>
-                      {combinedResults
-                        .filter((item) => item.type === 'folder')
-                        .map((folder) => (
-                          <li key={folder.id} className="cursor-pointer my-2">
-                            <Link
-                              to="/journals/"
-                              onClick={() => {
-                                handleSelectFolder(folder.id, folder.title);
-                                setIsModalOpen(false);
-                              }}
-                            >
-                              <div className="flex flex-col">
-                                <span className="flex items-center gap-[7px] text-[16px] font-semibold text-secondary pl-2">
-                                  <CgNotes />
-                                  {folder.title}
-                                </span>
-                              </div>
-                            </Link>
-                          </li>
-                        ))}
+                      {folders.map((folder) => (
+                        <li key={folder.id} className="cursor-pointer my-2">
+                          <Link
+                            to="/journals/"
+                            onClick={() => {
+                              handleSelectFolder(folder.id, folder.title);
+                              setIsModalOpen(false);
+                            }}
+                          >
+                            <div className="flex flex-col">
+                              <span className="flex items-center gap-[7px] text-[16px] font-semibold text-secondary pl-2">
+                                <CgNotes />
+                                {folder.title}
+                              </span>
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
-                {combinedResults.some((item) => item.type === 'journal') &&
-                  combinedResults
-                    .filter((item) => item.type === 'journal')
-                    .map((journal) => (
-                      <div key={journal.id}>
-                        <p className="text-[13px] pl-2 font-normal font-semibold text-primary mt-2 mb-2">Journals</p>
-
-                        <FilterJournalList
-                          journals={combinedResults.filter((item) => item.type === 'journal')}
-                          folders={sortedFolders}
-                          setIsModalOpen={setIsModalOpen}
-                        />
-                      </div>
-                    ))}
+                {journals.length > 0 && (
+                  <div>
+                    <p className="text-[13px] pl-2 font-normal font-semibold text-primary mt-2 mb-2">Journals</p>
+                    <FilterJournalList
+                      journals={combinedResults.filter((item) => item.type === 'journal')}
+                      folders={sortedFolders}
+                      setIsModalOpen={setIsModalOpen}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               searchQuery && <p className="text-primary mt-3 text-sm text-center">No results found for your search.</p>
