@@ -5,6 +5,7 @@ import { PiSignOut } from 'react-icons/pi';
 import FolderList from '@/folder/pages/FolderList';
 import CreateFolder from '@/folder/pages/CreateFolder';
 import { Button } from '@/components/ui/button';
+import Search from '@/search/pages/Search';
 
 export default function Sidebar(): JSX.Element {
   return (
@@ -16,7 +17,8 @@ export default function Sidebar(): JSX.Element {
               <PiSidebarSimple style={{ strokeWidth: 2.5 }} />
             </Button>
           </div>
-          <menu className="">
+          <menu className="px-3">
+            <Search />
             <FolderList />
             <CreateFolder />
           </menu>

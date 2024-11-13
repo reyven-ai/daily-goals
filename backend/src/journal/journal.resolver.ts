@@ -14,6 +14,21 @@ export class JournalResolver {
     private readonly userService: UserService,
   ) {}
 
+  @Query(() => [Journal])
+  async searchJournals(
+    @Args('searchQuery') searchQuery: string,
+    @Context() context,
+  ): Promise<Journal[]> {
+    const authId = context.req.user.sub;
+    const user = await this.userService.getUserByAuthId(authId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.journalService.searchJournals(user.id, searchQuery);
+  }
+
   @Query(() => [Journal], { nullable: true })
   async getJournals(@Context() context): Promise<Journal[]> {
     const authId = context.req.user.sub;

@@ -9,6 +9,18 @@ import { TITLE_MAX_LENGTH } from './folder.constants';
 export class FolderService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async searchFolders(userId: string, searchQuery: string): Promise<Folder[]> {
+    return this.prisma.folder.findMany({
+      where: {
+        userId,
+        title: {
+          search: searchQuery,
+          mode: 'insensitive',
+        },
+      },
+    });
+  }
+
   async getFolders(userId: string): Promise<Folder[]> {
     return this.prisma.folder.findMany({
       where: { userId },

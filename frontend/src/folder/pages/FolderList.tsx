@@ -12,7 +12,7 @@ const FolderList: React.FC = () => {
 
   return (
     <div className="flex">
-      <div className="mt-2">
+      <div className="mt-4 w-[230px]">
         <ul>
           {sortedFolders.map((folder) => (
             <li key={folder.id}>
@@ -20,7 +20,7 @@ const FolderList: React.FC = () => {
                 to="/journals/"
                 onClick={() => handleSelectFolder(folder.id, folder.title)}
                 className={cn(
-                  'w-[230px] py-2 px-4 my-1 flex justify-between items-center text-[14px] hover:bg-popover-foreground hover:text-primary',
+                  'py-2 px-2 my-1 flex justify-between items-center rounded-[6px] text-[14px] hover:bg-popover-foreground hover:text-primary',
                   selectedFolderId === folder.id ? 'bg-popover-foreground text-primary' : 'text-secondary'
                 )}
               >
@@ -28,7 +28,7 @@ const FolderList: React.FC = () => {
                   <span className="text-[18px]">
                     <IoJournalOutline />
                   </span>
-                  <span>{folder.title}</span>
+                  <span className="w-[130px] text-ellipsis overflow-hidden whitespace-nowrap">{folder.title}</span>
                 </div>
                 <span className="text-sm">{folder.journals?.length || 0}</span>
               </Link>

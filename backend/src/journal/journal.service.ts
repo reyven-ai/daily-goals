@@ -8,6 +8,31 @@ import { Journal } from './entities/journal.entity';
 export class JournalService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async searchJournals(
+    userId: string,
+    searchQuery: string,
+  ): Promise<Journal[]> {
+    return this.prisma.journal.findMany({
+      where: {
+        userId,
+        OR: [
+          {
+            title: {
+              search: searchQuery,
+              mode: 'insensitive',
+            },
+          },
+          {
+            content: {
+              search: searchQuery,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+  }
+
   async getJournalsByFolderId(folderId: string): Promise<Journal[]> {
     return this.prisma.journal.findMany({
       where: { folderId },
@@ -38,7 +63,7 @@ export class JournalService {
     folderId: string,
   ): Promise<Journal> {
     const TITLE_MAX_LENGTH = 100;
-    const CONTENT_MAX_LENGTH = 5000;
+    const CONTENT_MAX_LENGTH = 10000;
 
     const userExists = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -73,7 +98,7 @@ export class JournalService {
     updateJournalInput: UpdateJournalInput,
   ): Promise<Journal> {
     const TITLE_MAX_LENGTH = 100;
-    const CONTENT_MAX_LENGTH = 5000;
+    const CONTENT_MAX_LENGTH = 10000;
 
     if (
       updateJournalInput.title &&

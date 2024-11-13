@@ -6,3 +6,8 @@ export interface Journals {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface JournalContextType {
+  selectedId: string | null;
+  setSelectedId: (id: string) => void;
+}

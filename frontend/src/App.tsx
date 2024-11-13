@@ -11,6 +11,7 @@ import JournalDetails from './journal/pages/JournalsDetails';
 import RootJournal from './journal/layouts/root-journal';
 import Continue from './auth/pages/Continue';
 import { FolderProvider } from './folder/context/FolderContext';
+import { JournalProvider } from './journal/context/JournalContext';
 
 export default function App() {
   return (
@@ -23,7 +24,9 @@ export default function App() {
                 path="/"
                 element={
                   <FolderProvider>
-                    <RootLayout />
+                    <JournalProvider>
+                      <RootLayout />
+                    </JournalProvider>
                   </FolderProvider>
                 }
               >

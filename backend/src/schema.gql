@@ -52,6 +52,8 @@ type Query {
   getFolders: [Folder!]!
   getJournal(id: String!): Journal
   getJournals: [Journal!]
+  searchFolders(searchQuery: String!): [Folder!]!
+  searchJournals(searchQuery: String!): [Journal!]!
 }
 
 input UpdateFolderInput {

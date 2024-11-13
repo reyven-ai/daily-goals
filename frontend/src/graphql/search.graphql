@@ -1,0 +1,30 @@
+query searchFolders($searchQuery: String!) {
+  searchFolders(searchQuery: $searchQuery) {
+    id
+    userId
+    title
+    createdAt
+    updatedAt
+    journals {
+      id
+      folderId
+      userId
+      title
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query searchJournals($searchQuery: String!) {
+  searchJournals(searchQuery: $searchQuery) {
+    id
+    folderId
+    userId
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
